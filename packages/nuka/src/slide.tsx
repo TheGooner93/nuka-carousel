@@ -152,7 +152,8 @@ const Slide = ({
   return (
     <div
       ref={slideRef}
-      {...{ inert: isFullyVisible ? undefined : 'true' }}
+      // Commenting this out for now
+      // {...{ inert: isFullyVisible ? undefined : 'true' }}
       className={`slide${currentSlideClass}${
         typeOfSlide ? ` ${typeOfSlide}` : ''
       }${isFullyVisible ? ' slide-visible' : ''}`}

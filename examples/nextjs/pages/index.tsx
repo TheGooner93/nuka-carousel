@@ -44,7 +44,9 @@ const Home = ({ urlParams }: HomeProps) => {
 
       <main className={styles.main}>
         <h1>Nuka Carousel Demo using NextJS</h1>
-        <Carousel {...carouselParams}>{slides}</Carousel>
+        <Carousel {...carouselParams} isRtl wrapAround>
+          {slides}
+        </Carousel>
       </main>
       <footer>
         <a

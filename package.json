@@ -1,5 +1,6 @@
 {
   "name": "nuka-carousel-monorepo",
+  "version": "1.0.1",
   "scripts": {
     "build": "pnpm run --filter nuka-carousel build",
     "build:watch": "pnpm run --filter nuka-carousel build:watch",
