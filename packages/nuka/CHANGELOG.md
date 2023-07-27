@@ -1,19 +1,43 @@
 # Nuka Changelog
 
+## 6.0.3
+
+### Patch Changes
+
+- Fix peer dependency version for React in package. ([#1017](https://github.com/FormidableLabs/nuka-carousel/pull/1017))
+
+## 6.0.2
+
+### Patch Changes
+
+- Add package provenance ([#1015](https://github.com/FormidableLabs/nuka-carousel/pull/1015))
+
+## 6.0.1
+
+### Patch Changes
+
+- Fix output of types. ([#1010](https://github.com/FormidableLabs/nuka-carousel/pull/1010))
+
+## 6.0.0
+
+### Major Changes
+
+- replace innerRef prop with a native-to-React ref prop to allow the nullablity of the ref ([#1006](https://github.com/FormidableLabs/nuka-carousel/pull/1006))
+  new docs page with demo
+
 ## 5.5.1
 
 ### Patch Changes
 
-* Fix to only include inert property when slide is not in view ([#1000](https://github.com/FormidableLabs/nuka-carousel/pull/1000)] @allypalanzi
-
+- Fix to only include inert property when slide is not in view ([#1000](https://github.com/FormidableLabs/nuka-carousel/pull/1000)] @allypalanzi
 
 ## 5.5.0
 
 ### Minor Changes
 
-* Implement fixed width slides with intersection observer ([#985](https://github.com/FormidableLabs/nuka-carousel/pull/985))
-* Fix cellAlignment issue
-* Enforce `scrollMode` `remainder` if `slidesToScroll` `auto` is used
+- Implement fixed width slides with intersection observer ([#985](https://github.com/FormidableLabs/nuka-carousel/pull/985))
+- Fix cellAlignment issue
+- Enforce `scrollMode` `remainder` if `slidesToScroll` `auto` is used
 
 ## 5.4.1
 
