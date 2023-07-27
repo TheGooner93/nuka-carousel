@@ -53,6 +53,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       dragThreshold: propsDragThreshold,
       enableKeyboardControls,
       frameAriaLabel,
+      isRtl = false,
       keyCodeConfig,
       onDrag,
       onDragEnd,
@@ -185,10 +186,12 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
         const slideChanged = targetSlideUnbounded !== currentSlide;
         slideChanged && beforeSlide(currentSlide, targetSlideBounded);
 
-        // Calculate the distance the slide transition animation needs to cover.
-        const currentOffset =
-          sliderListRef.current.getBoundingClientRect().left -
-          carouselRef.current.getBoundingClientRect().left;
+        // Calculate the distance the slide transition animation needs to cover, factoring in carouselDirection
+        const currentOffset = isRtl
+          ? sliderListRef.current.getBoundingClientRect().right -
+            carouselRef.current.getBoundingClientRect().right
+          : sliderListRef.current.getBoundingClientRect().left -
+            carouselRef.current.getBoundingClientRect().left;
         const sliderWidth = sliderListRef.current.offsetWidth;
         let targetOffset =
           (getPercentOffsetForSlide(
@@ -196,7 +199,8 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
             slideCount,
             slidesToShow,
             cellAlign,
-            wrapAround
+            wrapAround,
+            isRtl
           ) /
             100) *
           sliderWidth;
@@ -211,11 +215,20 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           // The DOM width of `slideCount` slides
           const slideSetWidth = sliderWidth / 3;
 
-          if (targetSlideUnbounded < 0) {
-            targetOffset += slideSetWidth;
-          }
-          if (targetSlideUnbounded >= slideCount) {
-            targetOffset -= slideSetWidth;
+          if (isRtl) {
+            if (targetSlideUnbounded < 0) {
+              targetOffset -= slideSetWidth;
+            }
+            if (targetSlideUnbounded >= slideCount) {
+              targetOffset += slideSetWidth;
+            }
+          } else {
+            if (targetSlideUnbounded < 0) {
+              targetOffset += slideSetWidth;
+            }
+            if (targetSlideUnbounded >= slideCount) {
+              targetOffset -= slideSetWidth;
+            }
           }
         }
 
@@ -233,16 +246,17 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
         }
       },
       [
-        afterSlide,
-        beforeSlide,
         carouselRef,
-        cellAlign,
+        slideCount,
         currentSlide,
+        beforeSlide,
+        isRtl,
+        slidesToShow,
+        cellAlign,
+        wrapAround,
         disableAnimation,
         speed,
-        slideCount,
-        slidesToShow,
-        wrapAround,
+        afterSlide,
       ]
     );
 
@@ -482,7 +496,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
 
       let nextSlideIndex = currentSlide;
       for (let index = 0; index < timesToMove; index += 1) {
-        if (dragDistance > 0) {
+        if (isRtl ? dragDistance < 0 : dragDistance > 0) {
           nextSlideIndex = getNextMoveIndex(
             scrollMode,
             wrapAround,
@@ -521,13 +535,15 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           return;
         }
         setIsDragging(true);
-        preDragOffset.current =
-          sliderListRef.current.getBoundingClientRect().left -
-          carouselRef.current.getBoundingClientRect().left;
+        preDragOffset.current = isRtl
+          ? sliderListRef.current.getBoundingClientRect().right -
+            carouselRef.current.getBoundingClientRect().right
+          : sliderListRef.current.getBoundingClientRect().left -
+            carouselRef.current.getBoundingClientRect().left;
 
         onDragStart(e);
       },
-      [carouselRef, onDragStart, mobileDraggingEnabled]
+      [mobileDraggingEnabled, carouselRef, isRtl, onDragStart]
     );
 
     const handlePointerMove = useCallback(
@@ -586,13 +602,15 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
 
         setIsDragging(true);
 
-        preDragOffset.current =
-          sliderListRef.current.getBoundingClientRect().left -
-          carouselRef.current.getBoundingClientRect().left;
+        preDragOffset.current = isRtl
+          ? sliderListRef.current.getBoundingClientRect().right -
+            carouselRef.current.getBoundingClientRect().right
+          : sliderListRef.current.getBoundingClientRect().left -
+            carouselRef.current.getBoundingClientRect().left;
 
         onDragStart(e);
       },
-      [carouselRef, desktopDraggingEnabled, onDragStart]
+      [carouselRef, desktopDraggingEnabled, isRtl, onDragStart]
     );
 
     const onMouseMove = useCallback(
@@ -602,12 +620,15 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
         onDrag(e);
 
         const offsetX =
-          e.clientX - carouselRef.current.getBoundingClientRect().left;
+          e.clientX -
+          (isRtl
+            ? carouselRef.current.getBoundingClientRect().right
+            : carouselRef.current.getBoundingClientRect().left);
         const moveValue = carouselRef.current.offsetWidth - offsetX;
 
         handlePointerMove(moveValue);
       },
-      [carouselRef, isDragging, handlePointerMove, onDrag]
+      [isDragging, carouselRef, onDrag, isRtl, handlePointerMove]
     );
 
     const onMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -729,6 +750,7 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
             easing={props.easing}
             edgeEasing={props.edgeEasing}
             isDragging={isDragging}
+            isRtl={isRtl}
             ref={setSliderListRef}
             scrollMode={scrollMode}
             animation={animation}

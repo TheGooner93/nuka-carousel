@@ -8,7 +8,8 @@ export const getPercentOffsetForSlide = (
   slideCount: number,
   slidesToShow: number,
   cellAlign: CellAlign,
-  wrapAround: boolean
+  wrapAround: boolean,
+  isRtl: boolean
 ): number => {
   // When wrapAround is enabled, we show the slides 3 times
   const renderedSlideCount = wrapAround ? 3 * slideCount : slideCount;
@@ -33,7 +34,9 @@ export const getPercentOffsetForSlide = (
 
   const currentSlideOffsetFrom0 = (100 / renderedSlideCount) * currentSlide;
 
-  return slide0Offset - currentSlideOffsetFrom0;
+  return isRtl
+    ? currentSlideOffsetFrom0 - slide0Offset
+    : slide0Offset - currentSlideOffsetFrom0;
 };
 
 interface SliderListProps
@@ -50,6 +53,7 @@ interface SliderListProps
     | 'slideWidth'
     | 'speed'
     | 'wrapAround'
+    | 'isRtl'
   > {
   slidesToScroll: number;
   animationDistance: number;
@@ -59,6 +63,7 @@ interface SliderListProps
   isDragging: boolean;
   slideCount: number;
   setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>;
+  isRtl: boolean;
 }
 
 export const SliderList = React.forwardRef<HTMLDivElement, SliderListProps>(
@@ -75,6 +80,7 @@ export const SliderList = React.forwardRef<HTMLDivElement, SliderListProps>(
       easing,
       edgeEasing,
       isDragging,
+      isRtl,
       scrollMode,
       slideCount,
       slidesToScroll,
@@ -98,6 +104,7 @@ export const SliderList = React.forwardRef<HTMLDivElement, SliderListProps>(
       slidesToShow,
       cellAlign,
       wrapAround,
+      isRtl,
     ] as const;
 
     // We recycle dot index generation to determine the leftmost and rightmost

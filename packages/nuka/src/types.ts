@@ -293,6 +293,11 @@ export interface InternalCarouselProps {
   frameAriaLabel?: string;
 
   /**
+   * Detect the direction of slide flow
+   */
+  isRtl?: boolean;
+
+  /**
    * When enableKeyboardControls is enabled, Configure keyCodes for corresponding slide actions as array of keyCodes
    */
   keyCodeConfig: KeyCodeConfig;
